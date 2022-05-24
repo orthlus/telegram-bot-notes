@@ -1,0 +1,7 @@
+.idea
+*.iml
+target
+docker*bot.yml
+*.bat
+db/*
+!db/001-example.sql
