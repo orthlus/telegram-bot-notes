@@ -71,7 +71,7 @@ public class NotesHandlers extends TelegramLongPollingBot {
 	private void handleText(String messageText) {
 		User user = users.get();
 		if (user.equalsState(WAIT_NEW_NOTE)) {
-			saveNote(messageText);
+			db.addNewNote(userIdLong(), messageText);
 			if (chanceToAnswer.get()) {
 				send("Ого, очень интересно! Сохранил");
 			}
@@ -158,10 +158,6 @@ public class NotesHandlers extends TelegramLongPollingBot {
 		} catch (TelegramApiException e) {
 			log.error("Ошибка отправки сообщения", e);
 		}
-	}
-
-	private void saveNote(String text) {
-		db.addNewNote(userIdLong(), text);
 	}
 
 	private InputFile makeHistoryDocument(DatePair datePair) {
