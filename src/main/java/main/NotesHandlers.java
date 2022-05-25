@@ -92,10 +92,9 @@ public class NotesHandlers extends TelegramLongPollingBot {
 				InputFile document;
 				if (datePair == null) {
 					// выборка за весь период
-					document = makeHistoryDocument();
-				} else {
-					document = makeHistoryDocument(datePair);
+					datePair = db.getDatesByUser(userIdLong());
 				}
+				document = makeHistoryDocument(datePair);
 				if (document != null) {
 					send(document);
 				} else {
@@ -163,10 +162,6 @@ public class NotesHandlers extends TelegramLongPollingBot {
 
 	private void saveNote(String text) {
 		db.addNewNote(userIdLong(), text);
-	}
-
-	private InputFile makeHistoryDocument() {
-		return makeHistoryDocument(db.getDatesByUser(userIdLong()));
 	}
 
 	private InputFile makeHistoryDocument(DatePair datePair) {
