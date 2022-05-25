@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static main.User.UserWaitInputStateEnum.*;
 
@@ -45,6 +46,8 @@ public class NotesHandlers extends TelegramLongPollingBot {
 	private BotKeyboards botKeyboards;
 	@Autowired
 	private InputValidator inputValidator;
+
+	private final Supplier<Boolean> chanceToAnswer = () -> random.nextDouble() < 0.05;
 
 	@Override
 	public void onUpdateReceived(Update update) {
@@ -69,10 +72,10 @@ public class NotesHandlers extends TelegramLongPollingBot {
 		User user = users.get();
 		if (user.equalsState(WAIT_NEW_NOTE)) {
 			saveNote(messageText);
-			if (hasChance()) {
+			if (chanceToAnswer.get()) {
 				send("Ого, очень интересно! Сохранил");
 			}
-		} else if (user.equalsState(WAIT_CONFIRM_TO_DELETE_HISTORY)){
+		} else if (user.equalsState(WAIT_CONFIRM_TO_DELETE_HISTORY)) {
 			if (messageText.equals("Да")) {
 				db.deleteHistory(userIdLong());
 				sendWithoutKeyboard("История удалена");
@@ -209,10 +212,6 @@ public class NotesHandlers extends TelegramLongPollingBot {
 
 	private String userId() {
 		return String.valueOf(users.get().getId());
-	}
-
-	private boolean hasChance() {
-		return random.nextDouble() < 0.05;
 	}
 
 	@Override
