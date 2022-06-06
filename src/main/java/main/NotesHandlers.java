@@ -132,7 +132,8 @@ public class NotesHandlers extends TelegramLongPollingBot {
 			SendDocument document = new SendDocument(userId(), inputFile);
 			document.setReplyMarkup(new ReplyKeyboardRemove(true));
 			execute(document);
-			users.get().markFileSent(document.getDocument().getNewMediaFile());
+//			users.get().markFileSent(document.getDocument().getNewMediaFile());
+			users.get().deleteFile(document.getDocument().getNewMediaFile());
 		} catch (TelegramApiException e) {
 			log.error("Ошибка отправки сообщения", e);
 		}

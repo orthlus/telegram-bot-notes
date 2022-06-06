@@ -2,11 +2,13 @@ package main;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
+@Slf4j
 public class User {
 	@Getter
 	private final long id;
@@ -15,22 +17,32 @@ public class User {
 //	@Getter
 //	private DatePair datePair;
 	private Map<UUID, Boolean> sentFiles;
+	private Set<UUID> sentFilesSet;
 
 	public User(long id) {
 		this.id = id;
 	}
 
 	public void addFile(Path file) {
-		if (sentFiles == null) {
-			sentFiles = new HashMap<>();
+		if (sentFilesSet == null) {
+			sentFilesSet = new HashSet<>();
 		}
-		sentFiles.put(UUID.fromString(file.getFileName().toString()), false);
+		sentFilesSet.add(UUID.fromString(file.getFileName().toString()));
 	}
 
+	public void deleteFile(File file) {
+		UUID uuid = UUID.fromString(file.getName());
+		if (!file.delete()) {
+			log.warn("Файл {} не был удалён", uuid);
+		}
+		sentFiles.remove(uuid);
+	}
+	@Deprecated
 	public void markFileSent(File file) {
 		sentFiles.put(UUID.fromString(file.getName()), true);
 	}
 
+	@Deprecated
 	public List<Path> getSentFiles() {
 		List<Path> result = new LinkedList<>();
 		for (Map.Entry<UUID, Boolean> entry : sentFiles.entrySet()) {
@@ -40,8 +52,8 @@ public class User {
 		return result;
 	}
 
+	@Deprecated
 	public void markFilesDeleted(List<Path> files) {
-		// TODO проверить что это вообще работает
 		List<UUID> uuids = files.stream().map(file -> UUID.fromString(file.getFileName().toString())).toList();
 		Set<UUID> keySet = sentFiles.keySet();
 		uuids.forEach(keySet::remove);
