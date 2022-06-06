@@ -14,8 +14,6 @@ public class User {
 	private final long id;
 	@Setter
 	private UserWaitInputStateEnum waitInput = UserWaitInputStateEnum.WAIT_NEW_NOTE;
-//	@Getter
-//	private DatePair datePair;
 	private Map<UUID, Boolean> sentFiles;
 	private Set<UUID> sentFilesSet;
 
@@ -59,11 +57,7 @@ public class User {
 		uuids.forEach(keySet::remove);
 	}
 
-//	public void clearDates() {
-//		datePair = null;
-//	}
-
-	public boolean equalsState(UserWaitInputStateEnum state) {
+	public boolean hasState(UserWaitInputStateEnum state) {
 		return waitInput.equals(state);
 	}
 

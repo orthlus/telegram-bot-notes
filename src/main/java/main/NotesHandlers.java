@@ -70,12 +70,12 @@ public class NotesHandlers extends TelegramLongPollingBot {
 
 	private void handleText(String messageText) {
 		User user = users.get();
-		if (user.equalsState(WAIT_NEW_NOTE)) {
+		if (user.hasState(WAIT_NEW_NOTE)) {
 			db.addNewNote(userIdLong(), messageText);
 			if (chanceToAnswer.get()) {
 				send("Ого, очень интересно! Сохранил");
 			}
-		} else if (user.equalsState(WAIT_CONFIRM_TO_DELETE_HISTORY)) {
+		} else if (user.hasState(WAIT_CONFIRM_TO_DELETE_HISTORY)) {
 			if (messageText.equals("Да")) {
 				db.deleteHistory(userIdLong());
 				sendWithoutKeyboard("История удалена");
@@ -86,7 +86,7 @@ public class NotesHandlers extends TelegramLongPollingBot {
 			} else {
 				send("Неверная команда :( Выбери, пожалуйста, из списка");
 			}
-		} else if (user.equalsState(WAIT_PERIOD_TYPE)) {
+		} else if (user.hasState(WAIT_PERIOD_TYPE)) {
 			if (botKeyboards.getListPeriodsKeyboardValues().contains(messageText)) {
 				DatePair datePair = botKeyboards.getDatePairByText(messageText);
 				InputFile document;
